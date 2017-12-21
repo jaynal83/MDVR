@@ -1,0 +1,145 @@
+---
+title: "Aesthetic mapping & geometric object in ggplot2"
+author: "Jaynal Abedin"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Session-3: Aesthetic mapping & geometric object in ggplot2
+
+In previous session, we were talking about the general syntax structure and semantic components of ggplot2. The following are the semantic components of ggplot2:
+
+* Data
+* Aesthetic mapping
+* Geometric object
+* Statistical transformations
+* Scales
+* Coordinate system
+* Position adjustments
+* Faceting
+
+Today we will talk see examples on how the aesthetic mapping and geometric object works. 
+
+## The dataset
+Before moving into the actual example, let's have a quick look into the dataset. Throughout this session, we will use **Flights** data from ```nycflights13``` library. 
+
+```{r Dataset, message=FALSE, warning=FALSE}
+library(nycflights13)
+ncol(flights)
+nrow(flights)
+names(flights)
+head(flights)
+```
+
+We will gradually create a plot by using various combination of the available variables.
+
+## Plotting
+Firstly, we have to load the ```ggplot2``` library and then initialize the plot by using ```ggplot``` function. As you know by now that the ```ggplot```function take a dataframe as an input. Once you provide the dataframe as input then you can map the aesthetic by specifying the axes. In the aesthetic mapping the parameter ```x```is the mandatory components. The list of aesthetic given below:
+
+* x: positioning along x-axis
+* y: positioning along y-axis
+* color (colour, col) : Usually it color the object's outline
+* fill: fill color of objects
+* alpha: A value between 0 and 1 for transparency of objects
+* linetype: Type of lines such as, solid, dashed, dotted, etc.
+* shape: shape of markers in scatter plots
+* size: how large objects appear
+
+To specify the aesthetic in a plot, ``` aes()``` has been used. 
+
+```{r step-1, message=FALSE, warning=FALSE}
+library(ggplot2)
+ggplot(data = flights, aes(x=dep_delay, y=arr_delay))
+```
+
+In the code above, we have defined the x-axis and y-axis variable and intialized the plot. But as of now this just a blank graph. We need to use geometric object on it. The aesthetic inherieted from the top level assignment and it associate with the geometric object that we call. For example, if we want to create a scatter plot, we will call ```geom_point()``` In this case we do not need to call the aesthetic (x and y axis), rather it will get the value of the axes from top level aesthetic assignment. 
+
+```{r step-2, message=FALSE, warning=FALSE}
+ggplot(data = flights, aes(x=dep_delay, y=arr_delay))+
+  geom_point()+
+  geom_smooth()
+```
+
+Now, we can override the aesthetic inheritance from top level. Below is the example of this step:
+
+```{r step-3, message=FALSE, warning=FALSE}
+ggplot(data = flights, aes(x=dep_delay, y=arr_delay))+
+  geom_point(aes(x=month))+
+  geom_smooth()
+```
+
+In the plot above, the scatter plot layer got a new variable to represent x-axis (month) but ```geom_smooth``` inherit the aesthetic mapping from top level assignment. Below is another step to override that part:
+
+```{r step-4, message=FALSE, warning=FALSE}
+ggplot(data = flights, aes(x=dep_delay, y=arr_delay))+
+  geom_point(aes(x=month))+
+  geom_smooth(aes(x=month))
+```
+
+## Aesthetic mapping Vs setting
+The objective of using aesthetic into the plot is to create a customized visualization. The aesthetic mapping works in such a way that it varies on the value of the variable specified. For example, if we want to give color of the points based on the value of ```origin```variable, the code will be:
+
+```{r step-5, message=FALSE, warning=FALSE}
+ggplot(data = flights, aes(x=dep_delay, y=arr_delay))+
+  geom_point(aes(col=origin))
+```
+
+Notice that the color has been defined based on the value of ```origin```, it is known as aesthetic mapping. Whereas if we define the aesthetic outside of the ```aes()``` function then it will assign the properties to the entire plot:
+
+```{r step-6, message=FALSE, warning=FALSE}
+ggplot(data = flights, aes(x=dep_delay, y=arr_delay))+
+  geom_point(col="darkgreen")
+```
+
+Also, even if we define the aesthetic within ```aes()``` function but use a constant value, it will behave similar to the above plot but you may not get the exact color that you are intended to:
+
+```{r step-7, message=FALSE, warning=FALSE}
+ggplot(data = flights, aes(x=dep_delay, y=arr_delay))+
+  geom_point(aes(col="darkgreen"))
+```
+
+# The use of alpha
+Now, let's go back to the original scatter plot with color by origin:
+```{r step-8, message=FALSE, warning=FALSE}
+ggplot(data = flights, aes(x=dep_delay, y=arr_delay))+
+  geom_point(aes(col=origin))
+```
+
+if you look the plot carefully, then you will see the there are lots of overlapping points near zero and it is difficult to distinguish between points. In this case, we can use transparent object by using ```alpha``` aesthetic as below:
+
+```{r step-9, message=FALSE, warning=FALSE}
+ggplot(data = flights, aes(x=dep_delay, y=arr_delay))+
+  geom_point(aes(col=origin), alpha=0.3)
+```
+
+## Single axis aesthetic
+
+As of now we have seen the plot with both x and y axes. In fact, some of the geometric object requires only x-axis. Here is an example:
+
+```{r step-10, message=FALSE, warning=FALSE}
+ggplot(data = flights, aes(x=dep_delay))+
+  geom_histogram()
+```
+
+We can add layer of frequency polygon with the histogram:
+
+```{r step-11, message=FALSE, warning=FALSE}
+ggplot(data = flights, aes(x=dep_delay))+
+  geom_histogram()+
+  geom_freqpoly()
+```
+
+## Writing customized text within plot area
+Using geometric object we can write any customized text and mathematical equation within the plot area:
+
+```{r step-12, message=FALSE, warning=FALSE}
+ggplot(data = flights, aes(x=dep_delay, y=arr_delay))+
+  geom_point()+
+  geom_text(aes(x=250, y=1000, label="Y=a+bx"))
+```
+
+
+
