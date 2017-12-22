@@ -1,0 +1,3 @@
+District wise population and area for all districts in Bangladesh. 
+The dataset accessed from a non-conventional website:
+http://www.statoids.com/ybd.html
