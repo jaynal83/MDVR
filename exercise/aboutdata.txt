@@ -1,3 +1,11 @@
 District wise population and area for all districts in Bangladesh. 
 The dataset accessed from a non-conventional website:
 http://www.statoids.com/ybd.html
+
+
+The dataset has the following variables:
+
+District: The naame of district (character variable)
+HASC:  Hierarchical administrative subdivision codes (middle two character represents division)
+pop: Total population of the district (numeric)
+area: total area of the district in square km
